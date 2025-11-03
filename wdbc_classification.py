@@ -25,7 +25,7 @@ if __name__ == '__main__':
     wdbc = load_wdbc_data('data/wdbc.data')     # TODO #1) Implement 'load_wdbc_data()'
 
     # Train a model
-    model = svm.SVC()                           # TODO #2) Find a better classifier (SVC accuracy: 0.902)
+    model = svm.SVC(kernel='rbf', gamma=16)                           # TODO #2) Find a better classifier (SVC accuracy: 0.902)
     model.fit(wdbc.data, wdbc.target)
 
     # Test the model
@@ -33,6 +33,13 @@ if __name__ == '__main__':
     accuracy = metrics.balanced_accuracy_score(wdbc.target, predict)
 
     # TODO #3) Visualize the confusion matrix
+    y_true = [False] * (len(target) - sum(target)) + [True] * sum(target) # True labels
+    y_pred = [False] * (len(predict) - sum(predict)) + [True] * sum(predict)   # Predicted labels
+
+    conf_matx = metrics.confusion_matrix(y_true, y_pred)          
+    conf_disp = metrics.ConfusionMatrixDisplay(conf_matx, display_labels=['malignant', 'benign'])
+    
+    conf_disp.plot()
 
     # Visualize testing results
     cmap = np.array([(1, 0, 0), (0, 1, 0)])
@@ -44,4 +51,5 @@ if __name__ == '__main__':
         plt.xlabel(wdbc.feature_names[x])
         plt.ylabel(wdbc.feature_names[y])
         plt.legend(handles=clabel, framealpha=0.5)
+
     plt.show()
